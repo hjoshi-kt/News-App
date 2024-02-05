@@ -3,7 +3,7 @@
 This app is purely built using Kotlin, following the core design principles of Android and adopting the MVVM framework.
 
 - ### Demo Video link -> [Click here](https://drive.google.com/file/d/1ZZjnygGkzlN2cPHBJG4nSvaDa74AzGfo/view?usp=sharing)
-- ### Release apk -> [Click here](https://github.com/pahadi777/News-App/blob/master/app/release/News%20App.apk)
+- ### Release apk -> [Click here](https://github.com/pahadi777/News-App/blob/master/app/release/News-App.apk)
 
 - ### Screenshot ->
 
