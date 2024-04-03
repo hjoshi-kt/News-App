@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener, NewsA
         val versionCode: Int = try {
             packageManager.getPackageInfo(packageName, 0).versionCode
         } catch (e: PackageManager.NameNotFoundException) {
-            -1
+            Int.MAX_VALUE
         }
 
         sharedPreferences = getSharedPreferences(Utils.MO_APP_VERSION_PREF_KEY, MODE_PRIVATE)
