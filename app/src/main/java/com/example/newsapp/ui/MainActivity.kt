@@ -1,6 +1,8 @@
 package com.example.newsapp.ui
 
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -26,6 +28,10 @@ import com.example.newsapp.network.NewsApiRepository
 import com.example.newsapp.network.NewsApiViewModel
 import com.example.newsapp.network.NewsApiViewModelFactory
 import com.example.newsapp.util.Utils
+import com.moengage.core.Properties
+import com.moengage.core.analytics.MoEAnalyticsHelper
+import com.moengage.core.model.AppStatus
+import com.moengage.pushbase.MoEPushHelper
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -46,6 +52,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener, NewsA
     private lateinit var filters : Array<String>
     private var menuItem: MenuItem? = null
     private var sortByAdapter :  ArrayAdapter<String>? = null
+    private lateinit var sharedPreferences : SharedPreferences
     companion object {
         private const val NEW_TO_OLD = "0"
     }
@@ -54,6 +61,26 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener, NewsA
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val packageManager = packageManager
+        val packageName = packageName
+
+        val versionCode: Int = try {
+            packageManager.getPackageInfo(packageName, 0).versionCode
+        } catch (e: PackageManager.NameNotFoundException) {
+            -1
+        }
+
+        sharedPreferences = getSharedPreferences(Utils.MO_APP_VERSION_PREF_KEY, MODE_PRIVATE)
+        val lastAppVersion = sharedPreferences.getInt(Utils.MO_APP_VERSION_PREF_KEY,Utils.DEFAULT_SAVED_APP_VERSION)
+        if (lastAppVersion == Utils.DEFAULT_SAVED_APP_VERSION) {
+            MoEAnalyticsHelper.setAppStatus(this, AppStatus.INSTALL)
+        } else if (lastAppVersion > versionCode) {
+            MoEAnalyticsHelper.setAppStatus(this, AppStatus.UPDATE)
+        }
+        sharedPreferences.edit().putInt(Utils.MO_APP_VERSION_PREF_KEY, versionCode).apply()
+        MoEPushHelper.getInstance().requestPushPermission(this)
+
         articles = mutableListOf()
         supportActionBar?.elevation = 0f
         dataStore = createDataStore(Utils.SORT_BY)
@@ -221,6 +248,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener, NewsA
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val properties = Properties()
+        properties
+            .addAttribute("changed sort by",sortBy)
+        MoEAnalyticsHelper.trackEvent(this, "sort by changed", properties)
         sortBy = 1 - sortBy
         setupSortByAdapter()
         lifecycleScope.launch {
