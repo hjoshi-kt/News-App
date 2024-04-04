@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
@@ -309,9 +308,9 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemClickListener, NewsA
      */
 
     override fun onItemClick(position: Int, articles: List<Articles>) {
-        val url = articles[position].url
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setData(Uri.parse(url))
-        startActivity(intent)
+//        val url = articles[position].url
+//        val intent = Intent(Intent.ACTION_VIEW)
+//        intent.setData(Uri.parse(url))
+        startActivity(Intent(this, MainActivity3::class.java))
     }
 }

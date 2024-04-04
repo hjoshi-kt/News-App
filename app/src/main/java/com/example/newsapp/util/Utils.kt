@@ -23,6 +23,7 @@ class Utils {
         const val NOTIFICATION_CHANNEL_NAME = "NEWS_NOTIFICATION"
         const val MO_APP_VERSION_PREF_KEY = "APP_VERSION"
         const val DEFAULT_SAVED_APP_VERSION = -1
+        const val NEWS_APP_LOG = "NEWS_APP_MOE_LOG"
 
         /**
          * Formats the given time string into a human-readable format.
